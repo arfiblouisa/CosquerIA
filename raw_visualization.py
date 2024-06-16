@@ -12,23 +12,36 @@ print(types)
 
 
 #plot Heau
-#takes some timebecause havy data
+#takes some time because havy data
 df.set_index('Date/time hiver', inplace=True)
 df.index = pd.to_datetime(df.index)
 
 # Resample the data to 2-hour intervals
-mseries = df['Heau(m_sw)'].resample('2H').mean()
+resampled_df = df[['Heau(m_sw)','Pair(m_sw)']].resample('2H').mean()
 
-# Create a new DataFrame from the resampled series
-df1 = pd.DataFrame({'Date/time hiver': mseries.index, 'Heau(m_sw)': mseries.values})
+fig, axs = plt.subplots(2, 1, figsize=(10, 12), sharex=True)
 
-# Plotting the resampled data
-plt.figure(figsize=(24, 6))
-plt.plot(df1['Date/time hiver'], df1['Heau(m_sw)'], label="Niveau d'eau")
-plt.title("Niveau d'eau dans la grotte", fontsize=20)
-plt.xlabel('Date', fontsize=10)
-plt.ylabel("Niveau d'eau [m_sw]", fontsize=10)
-plt.legend()
+# First plot (Heau)
+axs[0].plot(resampled_df.index, resampled_df['Heau(m_sw)'], label='Heau(m_sw)', color='b')
+axs[0].set_ylabel('Heau(m_sw)')
+axs[0].set_title("Hauteur d'eau dans la grotte [m]")
+axs[0].legend()
+axs[0].grid(True)
+
+# Second plot (Pair)
+axs[1].plot(resampled_df.index, resampled_df['Pair(m_sw)'], label='Pair(m_sw)', color='r')
+axs[1].set_xlabel('Date/time hiver')
+axs[1].set_ylabel('Pair(m_sw)')
+axs[1].set_title("Pression de l'air dans la grotte [m]")
+axs[1].legend()
+axs[1].grid(True)
+
 plt.show()
 
-print('ok')
+
+## Number of missing data
+
+nb_nan_Heau = df['Heau(m_sw)'].isna().sum()
+print(nb_nan_Heau) #24004
+nb_nan_Pair = df['Pair(m_sw)'].isna().sum()
+print(nb_nan_Pair) #0
