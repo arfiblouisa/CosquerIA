@@ -155,15 +155,15 @@ for epoch in range(n_epochs):
     
 with torch.no_grad():
     # shift train predictions for plotting
-    train_plot = np.ones_like(timeseries) * np.nan
+    train_plot = np.ones_like(df) * np.nan
     y_pred = model(X_train)
     y_pred = y_pred[:, -1, :]
     train_plot[lookback:train_size] = model(X_train)[:, -1, :]
     # shift test predictions for plotting
-    test_plot = np.ones_like(timeseries) * np.nan
-    test_plot[train_size+lookback:len(timeseries)] = model(X_test)[:, -1, :]
+    test_plot = np.ones_like(df) * np.nan
+    test_plot[train_size+lookback:len(df)] = model(X_test)[:, -1, :]
 # plot
-plt.plot(timeseries)
+plt.plot(df)
 plt.plot(train_plot, c='r')
 plt.plot(test_plot, c='g')
 plt.show()    
